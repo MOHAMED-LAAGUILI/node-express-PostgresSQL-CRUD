@@ -33,6 +33,44 @@ export const getUsersDataController = async (req, res) => {
     });
   }
 };
+export const getUserByIdController = async (req, res) => {
+  try {
+    // Extract the user ID from the route parameters
+    const { userid } = req.params;
+
+    // Fetch the user by ID from the database
+    const user = await userModel.findOne({
+      where: {
+        id: userid,
+      },
+    });
+
+    // Check if the user was not found
+    if (!user) {
+      return res.status(404).json({
+        message: "User Not Found",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Return the user data if found
+    return res.status(200).json({
+      message: "User Fetched Successfully",
+      success: true,
+      error: false,
+      data: user,
+    });
+  } catch (e) {
+    // Catch any error and return a 500 status
+    console.error(e); // Optional: log the error for easier debugging
+    res.status(500).json({
+      message: e.message || "Internal server error in [getUserByIdController]",
+      success: false,
+      error: true,
+    });
+  }
+};
 
 export const addUserController = async (req, res) => {
     try {
@@ -220,3 +258,4 @@ export const deleteUserController = async (req, res) => {
       });
     }
   };
+
